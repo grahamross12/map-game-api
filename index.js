@@ -1,11 +1,23 @@
-const express = require('express');
-const fs = require('fs');
+const express = require("express");
+const fs = require("fs");
 const app = express();
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "DELETE, PUT");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  if ("OPTIONS" == req.method) {
+    res.sendStatus(200);
+  } else {
+    next();
+  }
+});
 const DAILY_NUMBERS_FILE = "./daily_numbers.txt";
-app.get('/api/daily-numbers', (req, res) => {
+app.get("/api/daily-numbers", (req, res) => {
   let countries = fs.readFileSync(DAILY_NUMBERS_FILE).toString().split("\n");
   res.send(countries.slice(0, 10));
 });
 
-app.listen(3000, () => console.log('API is listening on port 3000.'));
-
+app.listen(3000, () => console.log("API is listening on port 3000."));
